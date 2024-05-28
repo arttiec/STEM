@@ -1,0 +1,91 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div id="connectedPrototypes" class="text-center">
+    @ViewData["UserId"]
+</div>
+
+@section Scripts {
+    <script>
+        const url = "ws://192.169.140.66:8080";
+        let socket;
+        
+        function connectWebSocket() {
+            socket = new WebSocket(url);
+
+            socket.onopen = function (event) {
+                console.log("Conexão WebSocket aberta.");
+
+                const data = {
+                    TypeOfMessage: "UserInfo",
+                    UserId: "@ViewData["UserId"]"
+                };
+
+                socket.send(JSON.stringify(data));
+            };
+
+            socket.onmessage = function (event) {
+                const data = JSON.parse(event.data);
+                
+                console.log(data);
+
+                if (data.TypeOfMessage === 'ConnectedPrototypes') {
+                    displayUsers(data.Prototypes);
+                }
+            };
+
+            socket.onerror = function (error) {
+                console.error("Erro WebSocket:", error);
+            };
+
+            socket.onclose = function (event) {
+                console.log("Conexão WebSocket fechada.");
+            };
+        }
+
+        function displayUsers(prototypes) {
+            const prototypesDiv = document.getElementById("connectedPrototypes");
+            prototypesDiv.innerHTML = "";
+
+            prototypes.forEach(prototype => {
+                const prototypeDiv = document.createElement("div");
+
+                const prototypeLink = document.createElement("a");
+                prototypeLink.setAttribute("id", prototype.Id);
+                
+                if (prototype.Status == 0) {
+                    prototypeLink.setAttribute("class", "btn btn-primary");
+                    prototypeLink.setAttribute("asp-controller", "Home");
+                    prototypeLink.setAttribute("asp-action", prototype.Type);
+                    prototypeLink.setAttribute("asp-route-id", prototype.Id);
+
+                    prototypeLink.addEventListener("click", function() {
+                        
+                        @* const data = {
+                            "TypeOfMessage": "CreateRoom",
+                            "UserId": "@ViewData["UserId"]",
+                            "PrototypeId": prototype.Id
+                        };
+
+                        socket.send(JSON.stringify(data)); *@
+
+                        window.location.href = "/Home/" + prototype.Type + "/" + prototype.Id;
+                    });
+
+                } else {
+                    prototypeLink.setAttribute("class", "btn btn-secondary");
+                }
+
+                prototypeLink.innerText = prototype.Type + " - " + prototype.Id;
+
+                prototypeDiv.appendChild(prototypeLink);
+                prototypesDiv.appendChild(prototypeDiv);
+            });
+        }
+
+        window.onload = function () {
+            connectWebSocket();
+        };
+    </script>
+}

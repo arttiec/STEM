@@ -1,0 +1,122 @@
+@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="d-flex justify-content-center">
+    <div class="card w-50">
+        <h5 class="card-header">Manipulador - @ViewData["PrototypeId"]</h5>
+        <div class="card-body">
+            <label for="Base" class="form-label">Base</label>
+            <input id="Base" type="range" class="form-range" min="0" max="180" step="1" >
+
+            <label for="Arm" class="form-label">Braço</label>
+            <input id="Arm" type="range" class="form-range" min="0" max="180" step="1" >
+
+            <label for="Forearm" class="form-label">Antibraço</label>
+            <input id="Forearm" type="range" class="form-range" min="0" max="180" step="1" >
+
+            <label for="Wrist" class="form-label">Punho</label>
+            <input id="Wrist" type="range" class="form-range" min="0" max="180" step="1" >
+
+            <button id="Hand" type="button" class="btn btn-outline-danger" >Garra</button>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let previousMillis = 0;
+        const interval = 100;
+
+        const url = "ws://192.169.140.66:8080";
+
+        function connectWebSocket() {
+            const socket = new WebSocket(url);
+
+            socket.onopen = function (event) {
+                console.log("Conexão WebSocket aberta.");
+
+                const data = {
+                    "TypeOfMessage": "CreateRoom",
+                    "UserId": "@ViewData["UserId"]",
+                    "PrototypeId": "@ViewData["PrototypeId"]"
+                };
+
+                sendMessage(data);
+            };
+
+            socket.onmessage = function (event) {
+                const messagesDiv = document.getElementById("messages");
+                messagesDiv.innerHTML += "<p>" + event.data + "</p>";
+            };
+
+            socket.onerror = function (error) {
+                console.error("Erro WebSocket:", error);
+            };
+
+            socket.onclose = function (event) {
+                console.log("Conexão WebSocket fechada.");
+
+                const json = {
+                    "TypeOfMessage": "updateStatusPrototype",
+                    "Id": "@ViewData["Id"]",
+                    "Status": 0
+                };
+
+                socket.send(JSON.stringify(json));
+            };
+
+            function sendMessage(msg) {
+                const currentMillis = new Date().getTime();
+
+                if (currentMillis - previousMillis >= interval) {
+                    socket.send(JSON.stringify(msg));
+                    previousMillis = currentMillis;
+                }
+            };
+            
+            const partNumbers = {
+                "Base": 0,
+                "Arm": 1,
+                "Forearm": 2,
+                "Wrist": 3,
+                "Hand": 4
+            };
+
+            const rangeInputs = document.querySelectorAll('input[type="range"]');
+
+            rangeInputs.forEach(function(input) {
+                input.addEventListener('input', function() {
+                    const json = {
+                        "TypeOfMessage": "ManipulatorDataInfo",
+                        "Addressee": "@ViewData["PrototypeId"]",
+                        "Message": {"Part": partNumbers[this.id], "Position": parseInt(this.value)}
+                    };
+
+                    console.log(json);
+
+                    sendMessage(json);
+                });
+            });
+
+            const button = document.getElementById('Hand');
+            let buttonState = 0;
+            button.addEventListener('click', function() {
+                buttonState = buttonState === 0 ? 1 : 0;
+                const json = {
+                        "TypeOfMessage": "ManipulatorDataInfo",
+                        "Addressee": "@ViewData["PrototypeId"]",
+                        "Message": {"Part": partNumbers[this.id], "Position": buttonState}
+                };
+
+                console.log(json);
+
+                socket.send(JSON.stringify(json));
+            });
+        }
+
+        window.onload = function () {
+            connectWebSocket();
+        };
+    </script>
+}
