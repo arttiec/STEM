@@ -1,17 +1,26 @@
 import { WebSocketServer } from 'ws';
-import { UserModel } from './Models/UserModel.js'
-import { PrototypeModel } from './Models/PrototypeModel.js';
-import { RoomModel } from './Models/RoomModel.js';
+import { UserRegister } from './Registers/UserRegister.js';
+import { PrototypeRegister } from './Registers/PrototypeRegister.js';
+import { RoomRegister} from './Registers/RoomRegister.js';
+import logger from './logger.js';
 
 var idRoom = 0;
 
+const userRegister = new UserRegister();
+const prototypeRegister = new PrototypeRegister();
+const roomRegister = new RoomRegister();
+
 const connectedUsers = [];
 const connectedPrototypes = [];
-const rooms = [];
 
 const wss = new WebSocketServer({ port: 8080 });
 
 wss.on('connection', function connection(ws) {
+  logger.info({
+    name: "ESTABELISHED_CONNECTION", 
+    origin: "<", 
+    message: "Establishment websocket connection with server"
+  });
 
   ws.on('message', function handleMessage(message) {
     try {
@@ -24,16 +33,18 @@ wss.on('connection', function connection(ws) {
           case 'UserInfo':
             console.log(`Usuário ${data.UserId} Conectado.`);
 
-            handleUserInfo(data, ws);
+            userRegister.InsertObject(data, ws)
             break;
           
           case 'PrototypeInfo':
             console.log(`Protótipo ${data.PrototypeId} Conectado.`);
 
-            handlePrototypeInfo(data, ws);
+            prototypeRegister.InsertObject(data, ws)
             break;
           
           case 'CreateRoom':
+
+
             handleRoom(data, ws);
             break;
 
@@ -67,33 +78,6 @@ wss.on('connection', function connection(ws) {
   });
 });
 
-function handleUserInfo(data, ws) {
-  const user = new UserModel(data.UserId, ws);
-  
-  connectedUsers.push(user);
-
-  ws.on('close', function close() {
-    console.log(`Cliente ${data.UserId} Desconectado.`);
-
-    connectedUsers.splice(connectedUsers.indexOf(user), 1);
-  });
-
-  ws.on('error', console.error)
-}
-
-function handlePrototypeInfo(data, ws) {
-  const prototype = new PrototypeModel(data.PrototypeId, data.Type, ws);
-
-  connectedPrototypes.push(prototype);
-
-  ws.on('close', function close() {
-    console.log(`Protótipo ${data.PrototypeId} Desconectado.`);
-
-    connectedPrototypes.splice(connectedPrototypes.indexOf(prototype), 1);
-  });
-
-  ws.on('error', console.error)
-}
 
 // {"TypeOfMessage": "CreateRoom", "UserId": value1, "PrototypeId": value2}
 function handleRoom(data, ws) {
@@ -153,9 +137,9 @@ function verifyConnectionsOfPrototypes() {
   });
 }
 
-// setInterval(() => {
-//   console.log(connectedPrototypes);
-// }, 3000);
+setInterval(() => {
+  console.log(userRegister.register);
+}, 3000);
 
 setInterval(() =>{
   verifyConnectionsOfPrototypes()

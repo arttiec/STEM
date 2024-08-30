@@ -1,7 +1,5 @@
 import { WebSocket } from "ws";
 
-const id = "MP"
-
 const ws = new WebSocket("ws://localhost:8080");
 
 function generateId() {
@@ -11,7 +9,7 @@ function generateId() {
 ws.on('error', console.error);
 
 ws.on('open', function open() {
-  const data = JSON.stringify({ TypeOfMessage: 'PrototypeInfo', PrototypeId: id + `${generateId()}`, Type: 'Manipulator' });
+  const data = JSON.stringify({ TypeOfMessage: 'UserInfo', UserId: `${generateId()}` });
 
   ws.send(data);
 });
