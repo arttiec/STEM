@@ -6,6 +6,8 @@ export class RoomRegister extends AbstractRegister
     constructor() 
     { 
         super();
+        
+        this.id = 0;
     }
 
     GetObjectById(id)
@@ -13,16 +15,12 @@ export class RoomRegister extends AbstractRegister
         throw new Error("Method 'GetObjectById(id)' must be implemented.");
     }
 
-    InsertObject()
+    InsertObject(user, prototype, ws)
     {
-        const user = connectedUsers.find(user => user.getId() == data.UserId);
-        const prototype = connectedPrototypes.find(prototype => prototype.getId() == data.PrototypeId);
-      
-        const room = new RoomModel(idRoom, user, prototype, ws);
-        idRoom++;
+        const room = new RoomModel(this.id, user, prototype, ws);
       
         prototype.setStatus(1);
-        rooms.push(room);
+        this.register.push(room);
       
         ws.on('close', function close() {
           console.log('Conexão entre fechado.');

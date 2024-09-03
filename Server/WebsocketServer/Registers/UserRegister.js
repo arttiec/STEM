@@ -20,10 +20,10 @@ export class UserRegister extends AbstractRegister
   
         this.register.push(user);
       
-        ws.on('close', function close() {
+        ws.on('close', () => {
           console.log(`Cliente ${data.UserId} Desconectado.`);
       
-          this.register.splice(this.register.indexOf(user), 1);
+          this.DeleteObject(user);
         });
       
         ws.on('error', console.error)
@@ -31,6 +31,6 @@ export class UserRegister extends AbstractRegister
 
     DeleteObject(id)
     {
-        throw new Error("Method 'DeleteObject(id)' must be implemented.");
+        this.register.splice(this.register.indexOf(id), 1);
     }
 }

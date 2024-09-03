@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "r0OL9MmvW1Gx9xFfQNfDDDc3dS9mAFKeujh2uWQ9jysEsRv+tly/LH5jxGGEpRd5pwWEksAbGwUPmN6oXxYGug==",
+  "dgSpecHash": "PeoL0qH+PTo6PoTVXMpJMv5R+vWLaRhZYLIyIRyR3OFQWEDz0MtWaEBKhn7Ccig9JqQSGdwZFZH7E/0VgBB2qg==",
   "success": true,
-  "projectFilePath": "C:\\Users\\arthu\\Desktop\\Trabalhos\\Server\\WebServer\\WebServer.csproj",
+  "projectFilePath": "C:\\Users\\arthu\\Documents\\GitHub\\STEM\\Server\\WebServer\\WebServer.csproj",
   "expectedPackageFiles": [],
   "logs": []
 }

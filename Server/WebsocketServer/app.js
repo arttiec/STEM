@@ -2,9 +2,8 @@ import { WebSocketServer } from 'ws';
 import { UserRegister } from './Registers/UserRegister.js';
 import { PrototypeRegister } from './Registers/PrototypeRegister.js';
 import { RoomRegister} from './Registers/RoomRegister.js';
+import { MessageHandler } from './Handlers/MessageHandler.js';
 import logger from './logger.js';
-
-var idRoom = 0;
 
 const userRegister = new UserRegister();
 const prototypeRegister = new PrototypeRegister();
@@ -16,11 +15,6 @@ const connectedPrototypes = [];
 const wss = new WebSocketServer({ port: 8080 });
 
 wss.on('connection', function connection(ws) {
-  logger.info({
-    name: "ESTABELISHED_CONNECTION", 
-    origin: "<", 
-    message: "Establishment websocket connection with server"
-  });
 
   ws.on('message', function handleMessage(message) {
     try {
@@ -43,7 +37,8 @@ wss.on('connection', function connection(ws) {
             break;
           
           case 'CreateRoom':
-
+            const user = userRegister.GetObjectById(data.UserId);
+            const prototype = prototypeRegister.GetObjectById(data.PrototypeId);
 
             handleRoom(data, ws);
             break;
@@ -53,7 +48,8 @@ wss.on('connection', function connection(ws) {
             
             console.log(data.Addressee, msg);
             
-            sendMessageToPrototype(data.Addressee, msg);
+            // sendMessageToPrototype(data.Addressee, msg);
+            MessageHandler.Notify(PrototypeRegister, data.Addressee, msg);
             break;
 
           default:
@@ -78,27 +74,7 @@ wss.on('connection', function connection(ws) {
   });
 });
 
-
 // {"TypeOfMessage": "CreateRoom", "UserId": value1, "PrototypeId": value2}
-function handleRoom(data, ws) {
-  const user = connectedUsers.find(user => user.getId() == data.UserId);
-  const prototype = connectedPrototypes.find(prototype => prototype.getId() == data.PrototypeId);
-
-  const room = new RoomModel(idRoom, user, prototype, ws);
-  idRoom++;
-
-  prototype.setStatus(1);
-  rooms.push(room);
-
-  ws.on('close', function close() {
-    console.log('Conexão entre fechado.');
-
-    prototype.setStatus(0);
-
-    rooms.splice(connectedPrototypes.indexOf(room), 1);
-  });
-}
-
 
 function sendConnectedPrototypes() {
   const prototypes = connectedPrototypes.map(prototype => {
@@ -110,16 +86,6 @@ function sendConnectedPrototypes() {
   connectedUsers.forEach(user => {
     user.getConnection().send(msg);
   });
-}
-
-function sendMessageToPrototype(id, message) {
-  const addressee = connectedPrototypes.find(user => user.getId() == id);
-
-  if (addressee) {
-    addressee.getConnection().send(message);
-  } else {
-    console.error(`Usuário de ID ${id} não encontrado!!!`);
-  }
 }
 
 function verifyConnectionsOfPrototypes() {

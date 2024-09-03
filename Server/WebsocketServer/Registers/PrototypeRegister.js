@@ -19,10 +19,10 @@ export class PrototypeRegister extends AbstractRegister
 
         this.register.push(prototype);
       
-        ws.on('close', function close() {
+        ws.on('close', () => {
           console.log(`Protótipo ${data.PrototypeId} Desconectado.`);
       
-          this.register.splice(this.register.indexOf(prototype), 1);
+          this.DeleteObject(prototype);
         });
       
         ws.on('error', console.error)
@@ -30,6 +30,6 @@ export class PrototypeRegister extends AbstractRegister
 
     DeleteObject(id)
     {
-        throw new Error("Method 'DeleteObject(id)' must be implemented.");
+        this.register.splice(this.register.indexOf(id), 1);
     }
 }
