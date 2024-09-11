@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\arthu\\Desktop\\Trabalhos\\Server\\WebServer\\WebServer.csproj": {}
+    "C:\\Users\\arthu\\Documents\\GitHub\\STEM\\Server\\WebServer\\WebServer.csproj": {}
   },
   "projects": {
-    "C:\\Users\\arthu\\Desktop\\Trabalhos\\Server\\WebServer\\WebServer.csproj": {
+    "C:\\Users\\arthu\\Documents\\GitHub\\STEM\\Server\\WebServer\\WebServer.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\arthu\\Desktop\\Trabalhos\\Server\\WebServer\\WebServer.csproj",
+        "projectUniqueName": "C:\\Users\\arthu\\Documents\\GitHub\\STEM\\Server\\WebServer\\WebServer.csproj",
         "projectName": "WebServer",
-        "projectPath": "C:\\Users\\arthu\\Desktop\\Trabalhos\\Server\\WebServer\\WebServer.csproj",
+        "projectPath": "C:\\Users\\arthu\\Documents\\GitHub\\STEM\\Server\\WebServer\\WebServer.csproj",
         "packagesPath": "C:\\Users\\arthu\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\arthu\\Desktop\\Trabalhos\\Server\\WebServer\\obj\\",
+        "outputPath": "C:\\Users\\arthu\\Documents\\GitHub\\STEM\\Server\\WebServer\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\arthu\\AppData\\Roaming\\NuGet\\NuGet.Config"
@@ -32,11 +32,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -61,7 +56,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }
