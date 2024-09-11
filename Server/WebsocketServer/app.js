@@ -3,8 +3,8 @@ import { UserRegister } from './Registers/UserRegister.js';
 import { PrototypeRegister } from './Registers/PrototypeRegister.js';
 import { RoomRegister} from './Registers/RoomRegister.js';
 import { MessageHandler } from './Handlers/MessageHandler.js';
-import logger from './logger.js';
 import { ConnectionHandler } from './Handlers/ConnectionHandler.js';
+import logger from './logger.js';
 
 const userRegister = new UserRegister();
 const prototypeRegister = new PrototypeRegister();

@@ -5,6 +5,8 @@
 
 class Websocket {
   private:
+    String id;
+    
     WebSocketsClient websocket;
     void webSocketEvent(WStype_t type, uint8_t * payload, size_t length);
     
@@ -13,7 +15,10 @@ class Websocket {
   public:
     Websocket();
 
+    void setId(String id);
+
     String getMsg() const;
+    String getId() const;
     
     void start(const char * address, const int port);
     void loop();
