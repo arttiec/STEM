@@ -22,17 +22,17 @@ export class RoomRegister extends AbstractRegister
         prototype.setStatus(1);
         this.register.push(room);
       
-        ws.on('close', function close() {
+        ws.on('close', () => {
           console.log('Conexão entre fechado.');
       
           prototype.setStatus(0);
       
-          rooms.splice(connectedPrototypes.indexOf(room), 1);
+          this.DeleteObject(room);
         });
     }
 
     DeleteObject(id)
     {
-        throw new Error("Method 'DeleteObject(id)' must be implemented.");
+        this.register.splice(this.register.indexOf(id), 1);
     }
 }

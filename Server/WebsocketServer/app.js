@@ -4,13 +4,14 @@ import { PrototypeRegister } from './Registers/PrototypeRegister.js';
 import { RoomRegister} from './Registers/RoomRegister.js';
 import { MessageHandler } from './Handlers/MessageHandler.js';
 import logger from './logger.js';
+import { ConnectionHandler } from './Handlers/ConnectionHandler.js';
 
 const userRegister = new UserRegister();
 const prototypeRegister = new PrototypeRegister();
 const roomRegister = new RoomRegister();
 
-const connectedUsers = [];
-const connectedPrototypes = [];
+const messageHandler = new MessageHandler();
+const connectionHandler = new ConnectionHandler();
 
 const wss = new WebSocketServer({ port: 8080 });
 
@@ -40,7 +41,7 @@ wss.on('connection', function connection(ws) {
             const user = userRegister.GetObjectById(data.UserId);
             const prototype = prototypeRegister.GetObjectById(data.PrototypeId);
 
-            handleRoom(data, ws);
+            roomRegister.InsertObject(user, prototype, ws);
             break;
 
           case 'ManipulatorDataInfo':
@@ -48,8 +49,7 @@ wss.on('connection', function connection(ws) {
             
             console.log(data.Addressee, msg);
             
-            // sendMessageToPrototype(data.Addressee, msg);
-            MessageHandler.Notify(PrototypeRegister, data.Addressee, msg);
+            messageHandler.Notify(prototypeRegister.register, data.Addressee, msg);
             break;
 
           default:
@@ -66,9 +66,10 @@ wss.on('connection', function connection(ws) {
   });
 
   ws.on('pong', function heartbeat() {
-    const prototype = connectedPrototypes.find(prototype => prototype.getConnection() === ws);
+    const prototype = prototypeRegister.register.find(prototype => prototype.getConnection() === ws);
     
-    if (prototype) {
+    if (prototype) 
+    {
       prototype.setIsAlive(true);
     }
   });
@@ -77,38 +78,20 @@ wss.on('connection', function connection(ws) {
 // {"TypeOfMessage": "CreateRoom", "UserId": value1, "PrototypeId": value2}
 
 function sendConnectedPrototypes() {
-  const prototypes = connectedPrototypes.map(prototype => {
+  const prototypes = prototypeRegister.register.map(prototype => {
     return { Id: prototype.getId(), Type: prototype.getType(), Status: prototype.getStatus() };
   });
 
   const msg = JSON.stringify({TypeOfMessage: 'ConnectedPrototypes', Prototypes: prototypes});
 
-  connectedUsers.forEach(user => {
+  userRegister.register.forEach(user => {
     user.getConnection().send(msg);
   });
 }
 
-function verifyConnectionsOfPrototypes() {
-  connectedPrototypes.forEach(prototype => {
-    if (!prototype.getIsAlive()) {
-      prototype.getConnection().terminate();
-      
-      connectedPrototypes.splice(connectedPrototypes.indexOf(prototype), 1)
-      console.log("desconectado!!!!");
-      return;
-    }
-    
-    prototype.setIsAlive(false);
-    prototype.getConnection().ping();
-  });
-}
-
-setInterval(() => {
-  console.log(userRegister.register);
-}, 3000);
 
 setInterval(() =>{
-  verifyConnectionsOfPrototypes()
+  connectionHandler.Verify(prototypeRegister.register);
 }, 1000);
 
 setInterval(() => {

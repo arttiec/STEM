@@ -52,7 +52,7 @@ void loop()
 
     if (serial.status) 
     {
-      if (serial.getReceivedMsg() != NULL && serial.getReceivedMsg().as<String>() != serial.getLastReceivedMsg().as<String>() && serial.getReceivedMsg().containsKey("Part") && serial.getReceivedMsg().containsKey("Position")) 
+      if (serial.getReceivedMsg() != NULL && serial.getReceivedMsg() != serial.getLastReceivedMsg()) 
       {
         int servo = serial.getReceivedMsg()["Part"].as<int>();
         int destiny = serial.getReceivedMsg()["Position"].as<int>();

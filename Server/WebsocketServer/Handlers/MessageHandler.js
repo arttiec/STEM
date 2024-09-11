@@ -8,17 +8,8 @@ export class MessageHandler
 
         if (addressee)
         {
-            addressee.getConnection.send(message);
-        }
-        else
-        {
-            logger.error({
-                name: "ID_NOT_FOUND", 
-                origin: ">", 
-                message: `{"Id": ${id}, "Error": "Id was not found in the registry"}`
-            });
-        }
-
+            addressee.getConnection().send(message);
+        }   
     }
 
     NotifyAll(register, message)
@@ -26,13 +17,3 @@ export class MessageHandler
         throw new Error("Not Implemented!");
     }
 }
-
-function sendMessageToPrototype(id, message) {
-    const addressee = connectedPrototypes.find(user => user.getId() == id);
-  
-    if (addressee) {
-      addressee.getConnection().send(message);
-    } else {
-      console.error(`Usuário de ID ${id} não encontrado!!!`);
-    }
-  }
