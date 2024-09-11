@@ -13,6 +13,7 @@ void setup() {
   Serial.begin(9600);
   
   serial.waitHandshake("{\"Id\": \"ESP\", \"Data\": \"Ok\"}");
+  ws.setId(serial.getReceivedMsg()["Id"]);
   
   wifi.start();
   ws.start(address, port);

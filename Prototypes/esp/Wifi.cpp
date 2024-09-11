@@ -5,12 +5,7 @@ Wifi::Wifi() {};
 void Wifi::start() {
   WiFi.mode(WIFI_STA);
 
-  wifi.addAP("Margareth2G", "Maga3008");
-  wifi.addAP("EVENTOS", "eventos2020!");
-  wifi.addAP("songbird", "epvv8783");
-  wifi.addAP("STEMLABNET", "1n0v@t3ch.5t3m@#!");
-  wifi.addAP("STEMLABNET_LARANJA", "stemlabnet");
-  wifi.addAP("STEMLABNET_ROXO", "stemlabnet");
+  wifi.addAP("put-your-nw-name", "put-your-nw-ssid");
   
   Serial.print("Conectando");
 
